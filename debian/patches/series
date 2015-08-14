@@ -1,0 +1,14 @@
+configparse.patch
+deb-config-h.patch
+datehack.patch
+manpage.patch
+man-startcount.patch
+cpp-crossbuild.patch
+dst.patch
+dateext-504079.patch
+copyloginfo-512152.patch
+sharedscripts-519432.patch
+chown-484762.patch
+man-compressext-576362.patch
+asprintf-fixes.patch
+test-cleanup.patch

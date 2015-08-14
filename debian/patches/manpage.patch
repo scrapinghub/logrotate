@@ -1,0 +1,180 @@
+Closes: #101272, #335060
+Patches from: J S Bygott <jsb_no_spm@jsbygott.fsnet.co.uk>
+
+General fixes to manpages.
+
+
+Index: logrotate-3.8.1/logrotate.8
+===================================================================
+--- logrotate-3.8.1.orig/logrotate.8	2011-12-05 16:39:32.891498763 +0000
++++ logrotate-3.8.1/logrotate.8	2011-12-05 16:39:53.736079839 +0000
+@@ -11,9 +11,9 @@
+ weekly, monthly, or when it grows too large.
+ .P
+ Normally, \fBlogrotate\fR is run as a daily cron job.  It will not modify
+-a log multiple times in one day unless the criterion for that log is
+-based on the log's size and \fBlogrotate\fR is being run multiple times
+-each day, or unless the \fB-f\fR or \fB--force\fR option is used. 
++a log more than once in one day unless the criterion for that log is
++based on the log's size and \fBlogrotate\fR is being run more than once
++each day, or unless the \fB-f\fR or \fB--force\fR option is used.
+ .P
+ Any number of config files may be given on the command line. Later config
+ files may override the options given in earlier files, so the order
+@@ -52,14 +52,14 @@
+ Tells \fBlogrotate\fR which command to use when mailing logs. This
+ command should accept two arguments: 1) the subject of the message, and
+ 2) the recipient. The command must then read a message on standard input
+-and mail it to the recipient. The default mail command is \fB/bin/mail
++and mail it to the recipient. The default mail command is \fB/usr/bin/mail
+ -s\fR.
+ 
+ .TP
+-\fB-s, -\-state <statefile>\fR
++\fB-s\fR, \fB-\-state <statefile>\fR
+ Tells \fBlogrotate\fR to use an alternate state file.  This is useful
+ if logrotate is being run as a different user for various sets of
+-log files.  The default state file is \fI/var/lib/logrotate.status\fR.
++log files.  The default state file is \fI/var/lib/logrotate/status\fR.
+ 
+ .TP
+ \fB-\-usage\fR
+@@ -67,7 +67,7 @@
+ 
+ .TP
+ \fB-v\fR, \fB-\-verbose\fR
+-Turns on verbose mode.
++Turns on verbose mode, ie. display messages during rotation.
+ 
+ .SH CONFIGURATION FILE
+ 
+@@ -116,9 +116,9 @@
+ The first few lines set global options; in the example, logs are
+ compressed after they are rotated.  Note that comments may appear
+ anywhere in the config file as long as the first non-whitespace
+-character on the line is a #.
++character on the line is a \fB#\fR.
+ 
+-The next section of the config files defined how to handle the log file
++The next section of the config file defines how to handle the log file
+ \fI/var/log/messages\fR. The log will go through five weekly rotations before
+ being removed. After the log file has been rotated (but before the old
+ version of the log has been compressed), the command 
+@@ -126,14 +126,15 @@
+ 
+ The next section defines the parameters for both
+ \fI/var/log/httpd/access.log\fR and \fI/var/log/httpd/error.log\fR.
+-They are rotated whenever it grows over 100k in size, and the old logs
++Each is rotated whenever it grows over 100k in size, and the old logs
+ files are mailed (uncompressed) to www@my.org after going through 5
+ rotations, rather than being removed. The \fBsharedscripts\fR means that
+ the \fBpostrotate\fR script will only be run once (after the old logs have 
+-been compressed), not once for each log which is rotated. Note that the double
+-quotes around the first filename at the beginning of this section allows
+-logrotate to rotate logs with spaces in the name. Normal shell quoting rules
+-apply, with ', ", and \\ characters supported.
++been compressed), not once for each log which is rotated.
++Note that log file names may be enclosed in
++quotes (and that quotes are required if the name contains spaces).
++Normal shell quoting rules apply, with \fB'\fR, \fB"\fR, and \fB\\\fR
++characters supported.
+ 
+ The last section defines the parameters for all of the files in
+ \fI/var/log/news\fR. Each file is rotated on a monthly basis.  This is
+@@ -144,6 +145,10 @@
+ rotate all files, including previously rotated ones.  A way around this
+ is to use the \fBolddir\fR directive or a more exact wildcard (such as *.log).
+ 
++If the directory \fI/var/log/news\fR does not exist, this will cause
++\fBlogrotate\fR to report an error. This error cannot be stopped with
++the \fBmissingok\fR directive.
++
+ Here is more information on the directives which may be included in
+ a \fBlogrotate\fR configuration file:
+ 
+@@ -155,12 +160,12 @@
+ .TP
+ \fBcompresscmd\fR
+ Specifies which command to use to compress log files.  The default is
+-\fBgzip\fR.  See also \fBcompress\fR.
++\fBgzip\fR(1).  See also \fBcompress\fR.
+ 
+ .TP
+ \fBuncompresscmd\fR
+ Specifies which command to use to uncompress log files.  The default is
+-\fBgunzip\fR.
++\fBgunzip\fR(1).
+ 
+ .TP
+ \fBcompressext\fR
+@@ -183,7 +188,7 @@
+ 
+ .TP
+ \fBcopytruncate\fR
+-Truncate the original log file in place after creating a copy,
++Truncate the original log file to zero size in place after creating a copy,
+ instead of moving the old log file and optionally creating a new one.
+ It can be used when some program cannot be told to close its logfile
+ and thus might continue writing (appending) to the previous log file forever.
+@@ -243,7 +248,7 @@
+ .TP
+ \fBextension \fIext\fR
+ Log files with \fIext\fR extension can keep it after the rotation. 
+-If compression  is  used,  the compression extension (normally \fB.gz\fR) 
++If compression  is  used,  the compression extension (normally \fI.gz\fR)
+ appears after \fIext\fR. For example you have a logfile named mylog.foo 
+ and want to rotate it to mylog.1.foo.gz instead of mylog.foo.1.gz.
+ 
+@@ -264,7 +269,7 @@
+ 
+ .TP
+ \fBmail \fIaddress\fR
+-When a log is rotated out-of-existence, it is mailed to \fIaddress\fR. If
++When a log is rotated out of existence, it is mailed to \fIaddress\fR. If
+ no mail should be generated by a particular log, the \fBnomail\fR directive
+ may be used.
+ 
+@@ -344,7 +349,7 @@
+ 
+ .TP
+ \fBnomail\fR
+-Don't mail old log files to any address.
++Do not mail old log files to any address.
+ 
+ .TP
+ \fBnomissingok\fR
+@@ -352,7 +357,7 @@
+ 
+ .TP
+ \fBnoolddir\fR
+-Logs are rotated in the same directory the log normally resides in (this 
++Logs are rotated in the directory they normally reside in (this 
+ overrides the \fBolddir\fR option).
+ 
+ .TP
+@@ -435,7 +440,7 @@
+ \fIsize\fR is followed by \fIk\fR, the size is assumed to be in kilobytes.
+ If the \fIM\fR is used, the size is in megabytes, and if \fIG\fR is used, the
+ size is in gigabytes. So \fBsize 100\fR, \fIsize 100k\fR, \fIsize 100M\fR and
+-\fIsize 100G\f are all valid.
++\fIsize 100G\fR are all valid.
+ 
+ .TP
+ \fBsharedscripts\fR
+@@ -508,12 +513,15 @@
+ .SH SEE ALSO
+ .BR gzip (1)
+ 
+-<http://fedorahosted.org/logrotate/>
++.SH NOTES
++The \fBkillall\fR(1) program in Debian is found in the \fIpsmisc\fR package.
+ 
+ .SH AUTHORS
+ .nf
+ Erik Troan, Preston Brown, Jan Kaluza.
+ 
+ <logrotate-owner@fedoraproject.org>
++<http://fedorahosted.org/logrotate/>
+ 
++Corrections and changes for Debian by Paul Martin <pm@debian.org>
+ .fi

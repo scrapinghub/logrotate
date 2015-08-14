@@ -1,0 +1,23 @@
+Index: logrotate-3.8.1/logrotate.8
+===================================================================
+--- logrotate-3.8.1.orig/logrotate.8	2011-12-05 16:39:57.248177567 +0000
++++ logrotate-3.8.1/logrotate.8	2011-12-05 17:17:53.407598914 +0000
+@@ -170,13 +170,15 @@
+ .TP
+ \fBcompressext\fR
+ Specifies which extension to use on compressed logfiles, if compression
+-is enabled.  The default follows that of the configured compression
+-command.
++is enabled.  The default is ".gz".  If you use a different compression
++command, you will need to change \fBcompressext\fR accordingly.
+ 
+ .TP
+ \fBcompressoptions\fR
+ Command line options may be passed to the compression program, if one is
+-in use.  The default, for \fBgzip\fR(1), is "-9" (maximum compression).
++in use.  The default is "-9" (maximum compression for gzip).  If you use a 
++different compression command, you may need to change the 
++\fBcompressoptions\fR to match.
+ 
+ .TP
+ \fBcopy\fR

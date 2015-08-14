@@ -1,0 +1,2 @@
+logrotate		usr/sbin/
+debian/logrotate.conf	etc/

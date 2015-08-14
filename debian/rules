@@ -1,0 +1,25 @@
+#!/usr/bin/make -f
+export DEB_HOST_ARCH_OS := $(shell dpkg-architecture -qDEB_HOST_ARCH_OS \
+        2>/dev/null || true)
+
+export DEB_HOST_GNU_SYSTEM := $(shell dpkg-architecture \
+        -qDEB_HOST_GNU_SYSTEM 2>/dev/null || true)
+
+ifeq ($(DEB_HOST_ARCH_OS),)
+  DEB_HOST_ARCH_OS := $(subst -gnu,,$(DEB_HOST_GNU_SYSTEM))
+  ifeq ($(DEB_HOST_ARCH_OS),gnu)
+    DEB_HOST_ARCH_OS := hurd
+  endif
+endif
+
+%:
+	dh $@
+
+override_dh_auto_build:
+ifeq ($(DEB_HOST_ARCH_OS),linux)
+	$(MAKE) RPM_OPT_FLAGS="$(CFLAGS)" WITH_SELINUX="yes"
+else
+	$(MAKE) RPM_OPT_FLAGS="$(CFLAGS)"
+endif
+
+override_dh_auto_install:

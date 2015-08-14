@@ -1,0 +1,16 @@
+No longer consider state file dates before 1996 as fatal errors.
+(Closes: #65534)
+
+Index: logrotate-3.8.1/logrotate.c
+===================================================================
+--- logrotate-3.8.1.orig/logrotate.c	2011-12-05 16:39:33.039502886 +0000
++++ logrotate-3.8.1/logrotate.c	2011-12-05 16:39:48.615937357 +0000
+@@ -1775,7 +1775,7 @@
+ 	}
+ 
+ 	/* Hack to hide earlier bug */
+-	if ((year != 1900) && (year < 1996 || year > 2100)) {
++	if ((year != 1900) && (year < 1970 || year > 2100)) {
+ 	    message(MESS_ERROR,
+ 		    "bad year %d for file %s in state file %s\n", year,
+ 		    argv[0], stateFilename);

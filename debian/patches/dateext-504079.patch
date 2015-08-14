@@ -1,0 +1,23 @@
+Fixes #504079.
+
+If you configure logrotate with mailfirst option with dateext and 
+delaycompress, logrotate doesn't send the log to the specific email 
+address, because it looks at for a .gz file, which doesn't exist (It 
+hasn't been compressed yet).
+
+
+
+Index: logrotate-3.8.1/logrotate.c
+===================================================================
+--- logrotate-3.8.1.orig/logrotate.c	2011-12-05 16:40:06.688440279 +0000
++++ logrotate-3.8.1/logrotate.c	2011-12-05 16:40:09.932530558 +0000
+@@ -1072,7 +1072,8 @@
+ 	}
+ 	/* firstRotated is most recently created/compressed rotated log */
+ 	sprintf(rotNames->firstRotated, "%s/%s%s%s%s",
+-		rotNames->dirName, rotNames->baseName, dext_str, fileext, compext);
++		rotNames->dirName, rotNames->baseName, dext_str, fileext,
++		(log->flags & LOG_FLAG_DELAYCOMPRESS) ? "" : compext);
+ 	globfree(&globResult);
+ 	free(glob_pattern);
+     } else {

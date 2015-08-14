@@ -1,0 +1,16 @@
+Inconsistency in manpage logrotate(8), start directive
+(Closes: #290628)
+
+Index: logrotate-3.8.1/logrotate.8
+===================================================================
+--- logrotate-3.8.1.orig/logrotate.8	2011-12-05 16:39:53.736079839 +0000
++++ logrotate-3.8.1/logrotate.8	2011-12-05 16:39:57.248177567 +0000
+@@ -473,7 +473,7 @@
+ you specify 0, the logs will be created with a .0 extension as they are
+ rotated from the original log files.  If you specify 9, log files will
+ be created with a .9, skipping 0-8.  Files will still be rotated the
+-number of times specified with the \fBcount\fR directive.
++number of times specified with the \fBrotate\fR directive.
+ 
+ .TP
+ \fBsu \fIuser\fR \fIgroup\fR

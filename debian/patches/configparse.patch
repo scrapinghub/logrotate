@@ -1,0 +1,28 @@
+# Loosens the config syntax checking to allow more flexibility.
+#  (Closes: #95617,#95630)
+
+Index: logrotate-3.8.1/config.c
+===================================================================
+--- logrotate-3.8.1.orig/config.c	2011-12-05 16:39:33.119505108 +0000
++++ logrotate-3.8.1/config.c	2011-12-05 16:39:38.151646143 +0000
+@@ -1094,7 +1094,7 @@
+ 
+ 						while (*endtag) {
+ 							chptr = endtag;
+-							while (!isspace(*chptr) && *chptr != ',' && *chptr)
++							while (!isspace(*chptr) && /* *chptr != ',' && */ *chptr)
+ 								chptr++;
+ 
+ 							tabooExts = realloc(tabooExts, sizeof(*tabooExts) *
+@@ -1106,8 +1106,10 @@
+ 							tabooCount++;
+ 
+ 							endtag = chptr;
++							/*
+ 							if (*endtag == ',')
+-								start++;
++								endtag++;
++							*/
+ 							while (isspace(*endtag) && *endtag)
+ 								endtag++;
+ 						}
