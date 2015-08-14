@@ -1,6 +1,6 @@
 #!/bin/bash -x
 
-sudo apt-get update && sudo apt-get install automake libtool autoconf build-essential
+sudo apt-get update && sudo apt-get install devscripts
 
 debuild --no-lintian -us -uc -b
 
