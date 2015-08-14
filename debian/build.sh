@@ -1,6 +1,6 @@
 #!/bin/bash -x
 
-apt-get update && apt-get install automake libtool autoconf build-essential
+sudo apt-get update && sudo apt-get install automake libtool autoconf build-essential
 
 debuild --no-lintian -us -uc -b
 
