@@ -1,6 +1,6 @@
-#!/bin/bash -x
+#!/bin/bash -ex
 
-sudo apt-get update && sudo apt-get install devscripts
+sudo apt-get update && sudo apt-get install devscripts libpopt-dev quilt libselinux1-dev
 
 debuild --no-lintian -us -uc -b
 
